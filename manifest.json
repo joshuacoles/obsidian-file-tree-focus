@@ -5,7 +5,7 @@
 	"minAppVersion": "0.15.0",
 	"description": "Focus on particular subtrees of the obsidian file tree. Hide all the cruft.",
 	"author": "Joshua Coles",
-	"authorUrl": "https://obsidian.md",
-	"fundingUrl": "https://obsidian.md/pricing",
+	"authorUrl": "https://github.com/joshuacoles",
+	"fundingUrl": "",
 	"isDesktopOnly": false
 }
