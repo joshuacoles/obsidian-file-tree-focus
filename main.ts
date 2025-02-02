@@ -56,13 +56,15 @@ export default class MyPlugin extends Plugin {
 
 			const selectorPrefixes = ['=', '~=', '|=', '^=', '$=', '*='];
 
-			const exceptions = this.settings.pathExceptions.map(path => {
-				const pathSelector = selectorPrefixes.some(prefix => path.startsWith(prefix))
-					? `data-path${path}`
-					: `data-path^="${path}"`;
+			const exceptions = this.settings.pathExceptions
+				.filter(path => path.length > 0)
+				.map(path => {
+					const pathSelector = selectorPrefixes.some(prefix => path.startsWith(prefix))
+						? `data-path${path}`
+						: `data-path^="${path}"`;
 
-				return `[data-type="file-explorer"] .tree-item:has(> .tree-item-self[${pathSelector}]) { ${withinException} }`;
-			}).join('\n');
+					return `[data-type="file-explorer"] .tree-item:has(> .tree-item-self[${pathSelector}]) { ${withinException} }`;
+				}).join('\n');
 
 			const base = this.settings.hideByDefault 
 				? '[data-type="file-explorer"] .tree-item { display: none }' 
