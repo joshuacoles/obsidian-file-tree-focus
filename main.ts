@@ -124,19 +124,45 @@ class SampleSettingTab extends PluginSettingTab {
 					this.plugin.updateStyles();
 				}));
 
-		new Setting(containerEl)
-			.setName('Path Exceptions')
-			.setDesc('List of paths that are exceptions to the default behavior')
-			.addTextArea(text => text
-				.setPlaceholder('One path per line')
-				.setValue(this.plugin.settings.pathExceptions.join('\n'))
-				.onChange(async (value) => {
-					this.plugin.settings.pathExceptions = value
-						.split('\n')
-						.map(p => p.trim())
-						.filter(p => p.length > 0);
+		containerEl.createEl('h3', {text: 'Path Exceptions'});
+		const pathListContainer = containerEl.createDiv('path-list-container');
+
+		// Create a setting for each path exception
+		this.plugin.settings.pathExceptions.forEach((path, index) => {
+			const pathSetting = new Setting(pathListContainer)
+				.setClass('obsidian-file-tree-focus-path-setting')
+				.addText(text => text
+					.setValue(path)
+					.onChange(async (value) => {
+						this.plugin.settings.pathExceptions[index] = value;
+						await this.plugin.saveSettings();
+						this.plugin.updateStyles();
+					}))
+				.addExtraButton(button => button
+					.setIcon('trash')
+					.setTooltip('Remove path')
+					.onClick(async () => {
+						this.plugin.settings.pathExceptions.splice(index, 1);
+						await this.plugin.saveSettings();
+						this.plugin.updateStyles();
+						// Refresh the display to show updated list
+						this.display();
+					}));
+			
+			// Remove the default bottom margin from settings
+			pathSetting.settingEl.style.border = 'none';
+		});
+
+		// Add button for new paths
+		new Setting(pathListContainer)
+			.addButton(button => button
+				.setButtonText('Add Path')
+				.onClick(async () => {
+					this.plugin.settings.pathExceptions.push('');
 					await this.plugin.saveSettings();
 					this.plugin.updateStyles();
+					// Refresh the display to show the new input
+					this.display();
 				}));
 	}
 }

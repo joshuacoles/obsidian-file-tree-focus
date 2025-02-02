@@ -1,8 +1,11 @@
-/*
+.obsidian-file-tree-focus-path-setting {
+    border: none;
+}
 
-This CSS file will be included with your plugin, and
-available in the app when your plugin is enabled.
+.obsidian-file-tree-focus-path-setting .setting-item-control {
+    justify-content: flex-start;
+}
 
-If your plugin does not need CSS, delete this file.
-
-*/
+.obsidian-file-tree-focus-path-setting .setting-item-info {
+    display: none;
+}
