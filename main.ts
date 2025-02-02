@@ -50,16 +50,25 @@ export default class MyPlugin extends Plugin {
 		if (!this.styleEl) return;
 
 		if (this.isEnabled) {
-			const css = this.settings.hideByDefault
-				? `
-					.tree-item { display: none }
-					${this.settings.pathExceptions.map(path => 
-						`.tree-item:has(> .tree-item-self[data-path^="${path}"]) { display: block }`
-					).join('\n')}
-				`
-				: this.settings.pathExceptions.map(path => 
-					`.tree-item:has(> .tree-item-self[data-path^="${path}"]) { display: none }`
-				).join('\n');
+			const withinException = this.settings.hideByDefault 
+				? 'display: block' 
+				: 'display: none';
+
+			const selectorPrefixes = ['=', '~=', '|=', '^=', '$=', '*='];
+
+			const exceptions = this.settings.pathExceptions.map(path => {
+				const pathSelector = selectorPrefixes.some(prefix => path.startsWith(prefix))
+					? `data-path${path}`
+					: `data-path^="${path}"`;
+
+				return `[data-type="file-explorer"] .tree-item:has(> .tree-item-self[${pathSelector}]) { ${withinException} }`;
+			}).join('\n');
+
+			const base = this.settings.hideByDefault 
+				? '[data-type="file-explorer"] .tree-item { display: none }' 
+				: '[data-type="file-explorer"] .tree-item { display: block }';
+
+			const css = `${base}\n${exceptions}`;
 			
 			this.styleEl.textContent = css;
 		} else {
